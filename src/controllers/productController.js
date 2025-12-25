@@ -49,7 +49,7 @@ const getProduct = asyncHandler(async (req, res) => {
     .limit(perPage)
     .populate({
       path: "image",
-      options: { limit: 2 },
+      options: { limit: 2 }, 
     });
 
   if (!products.length) {
@@ -72,24 +72,28 @@ const getProduct = asyncHandler(async (req, res) => {
     createdDate: product.createdDate,
     // image: product.image.length ? product.image[0].image : null, //limit 1
     image: Array.isArray(product.image)
-      ? product.image.map((img) =>img.image)
+      ? product.image.map((img) => img.image)
       : [],
   }));
 
   return res.status(200).json({
     status: true,
     message: "Product list",
-    currentPage: page,
-    perPage: perPage,
-    totalProducts: totalProducts,
-    totalPages: totalPages,
+    pagination: {
+      currentPage: page,
+      perPage: perPage,
+      totalProducts: totalProducts,
+      totalPages: totalPages,
+    },
     data: result,
   });
 });
 
 const getProductByID = asyncHandler(async (req, res) => {
   const id = req.params.id;
+  console.log(id)
   const result = await productModel.findById(id);
+  console.log(result)
   return res.json({
     message: "Get Product By ID",
     data: result,
@@ -104,15 +108,13 @@ const deleteProduct = asyncHandler(async (req, res) => {
     data: result,
   });
 });
-
 const updateProduct = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const { ...self } = req.body;
-  const result = await productModel.updateOne({ ...self, id });
-  return res.json({
-    message: `Updated Product: ${result.name}`,
-    data: result,
-  });
+  const {name, description, price, qty, image} = req.body;
+  console.log(req.body)
+  const result = await productModel.updateOne({name, description, price, qty, id});
+  const user = await productModel.findById(id)
+  return res.json({result, user});
 });
 module.exports = {
   addProduct,

@@ -8,8 +8,9 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ["admin", "editor", "user"], default: "user" },
   password: { type: String, reqiure: true },
   createdDate: { type: Date, default: Date.now },
-  product: [{ type: mongoose.Types.ObjectId, ref: "products" }],
+  favorite: [{type: mongoose.Types.ObjectId, ref: 'favorites'}]
 });
 
 const userModel = mongoose.model("users", userSchema);
 module.exports = userModel;
+

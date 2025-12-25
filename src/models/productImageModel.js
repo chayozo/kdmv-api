@@ -6,5 +6,5 @@ const imageSchema = new mongoose.Schema({
   createdDate: {type: Date, default: Date.now}
 });
 
-const productImageModel = new mongoose.model('product_image', imageSchema)
+const productImageModel = new mongoose.model('product_images', imageSchema)
 module.exports = productImageModel;

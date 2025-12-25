@@ -8,7 +8,7 @@ const signJWT = (id, email) => {
     },
     process.env.JWT_KEY,
     { expiresIn: "2h" }
-  );
+  ); 
   return token;
 };
 module.exports = { signJWT };

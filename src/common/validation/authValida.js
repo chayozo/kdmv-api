@@ -14,62 +14,42 @@ const loginSchema = checkSchema({
   },
 });
 const signupSchema = checkSchema({
-    username: {
-        isAlphanumeric: {
-            locale: 'en-US'
-        },
-        isLength: {
-            options: {
-                max: 15,
-                min: 6
-            }
-        }
+  username: {
+    isLength: {
+      options: {
+        max: 15,
+        min: 6,
+      },
     },
-    email: {
-        isEmail: true,
-        // Check if email already registered
-        custom: {
-            options: async (value) => {
-                const user = await userModel.findOne({ email: value })
-                if (user) {
-                    throw new Error(`User with email: ${value} already existed`)
-                }
-            }
+  },
+  email: {
+    isEmail: true,
+    // Check if email already registered
+    custom: {
+      options: async (value) => {
+        const user = await userModel.findOne({ email: value });
+        if (user) {
+          throw new Error(`User with email: ${value} already existed`);
         }
+      },
     },
-    age: {
-        isInt: {
-            options: {min: 1, max: 150},
-            errorMessage: 'Age must be between 1 and 150'
+  },
+  // At least 8 letters, Capital, smallcase, Number
+  password: {
+    isLength: {
+      options: {
+        min: 8,
+      },
+    },
+  },
+  confirmedPassword: {
+    custom: {
+      options: async (value, { req }) => {
+        if (value != req.body.password) {
+          throw new Error("Password mismatched!");
         }
+      },
     },
-    gender: {
-        optional: {
-            options: {
-                nullable: true
-            }
-        },
-       isString: true,
-    },
-    // At least 8 letters, Capital, smallcase, Number
-    password: { 
-        isAlphanumeric: {
-            locale: 'en-US'
-        },
-        isLength: {
-            options: {
-                min: 8
-            }
-        }
-    },
-    confirmedPassword: {
-        custom: {
-            options: async (value, { req }) => {
-                if (value != req.body.password) {
-                    throw new Error("Password mismatched!")
-                }
-            }
-        }
-    }
-})
+  },
+});
 module.exports = { loginSchema, signupSchema };
